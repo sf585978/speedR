@@ -9,6 +9,7 @@ To download speedR:
 install.packages('devtools')
 library(devtools)
 devtools::install_github('sf585978/speedR')
+library(speedR)
 ```
 
 ## Managing Data
