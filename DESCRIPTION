@@ -1,0 +1,16 @@
+Package: speedR
+Type: Package
+Title: speedR: Estimating Speed Ratings in R
+Version: 0.0.0.9000
+Date: 2017-09-28
+Author: Sean Fischer
+Maintainer: Sean Fischer <sean@seanfischer.me>
+Description: This package provides functions and data to estime speed ratings for college cross country runners.
+Depends: R (>= 3.4.1)
+Imports:
+	readr,
+	dplyr
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
