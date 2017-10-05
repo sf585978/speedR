@@ -10,6 +10,6 @@
 #' @examples
 #' SR_CourseCorrection(1595.2, 4.4, 2355, -46)
 
-SR_CourseCorrection <- function(x, alpha, beta, gamma) {
-  (beta - x - gamma) / alpha
+SR_CourseCorrection <- function(x, alpha = 4.4, beta = 2355, gamma = 0) {
+  (as.numeric(beta)- x - as.numeric(gamma)) / alpha
 }

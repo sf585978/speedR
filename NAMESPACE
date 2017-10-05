@@ -3,4 +3,7 @@
 export(SR)
 export(SR_CourseCorrection)
 export(addResults)
+export(addSpeedRatings)
+export(estimateSpeedRankings)
 export(getCourseCorrection)
+export(readResults)
