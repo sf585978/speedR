@@ -23,8 +23,10 @@ getCourseCorrection <- function(race,
       courseCorrections[i] <- 0
     } else {
       results2 <- suppressWarnings(results %>%
-                                    filter(raceID == race[i]) %>%
-                                    inner_join(referenceRunners, 
+                                     filter(raceID == race[i]) %>%
+                                     filter(seconds > quantile(seconds, 0.03)) %>%
+                                     filter(seconds < quantile(seconds, 0.95)) %>%
+                                     inner_join(referenceRunners,
                                                by = c("name", "school")))
       guess <- mean(results$seconds - results2$gennyTime)
       x <- results2$seconds
@@ -44,3 +46,4 @@ getCourseCorrection <- function(race,
   courseCorrections <- data.frame(raceID = race, gamma = courseCorrections)
   return(courseCorrections)
 }
+""

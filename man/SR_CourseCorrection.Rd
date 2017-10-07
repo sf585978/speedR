@@ -4,7 +4,7 @@
 \alias{SR_CourseCorrection}
 \title{Course Corrected Speed Rating Estimation}
 \usage{
-SR_CourseCorrection(x, alpha = 4.4, beta = 2355, gamma = 0)
+SR_CourseCorrection(x, alpha, beta, gamma)
 }
 \arguments{
 \item{x}{Time in seconds for runners as a numeric vector}
