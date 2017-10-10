@@ -10,6 +10,7 @@
 addResults <- function(file) {
   for (i in 1:length(file)) {
     newResults <- readResults(file[i])
+    newResults <- newResults[,c("name", "school", "seconds", "raceID")]
     raceID <- unique(newResults$raceID)
     if(file.exists("Data/Results/results.csv")) {
       results <- suppressWarnings(suppressMessages(

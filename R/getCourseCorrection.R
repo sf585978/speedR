@@ -11,6 +11,7 @@
 getCourseCorrection <- function(race,
                                 results,
                                 referenceRunners,
+                                guess,
                                 alpha = 4.4, 
                                 beta = 2355, 
                                 baseID = "8306") {
@@ -24,13 +25,14 @@ getCourseCorrection <- function(race,
     } else {
       results2 <- suppressWarnings(results %>%
                                      filter(raceID == race[i]) %>%
-                                     filter(seconds > quantile(seconds, 0.03)) %>%
-                                     filter(seconds < quantile(seconds, 0.95)) %>%
+                                     filter(seconds > quantile(seconds, 
+                                                               0.03)) %>%
+                                     filter(seconds < quantile(seconds,
+                                                               0.95)) %>%
                                      inner_join(referenceRunners,
-                                               by = c("name", "school")))
-      guess <- mean(results$seconds - results2$gennyTime)
+                                                by = c("name", "school")))
       x <- results2$seconds
-      y <- results2$gennySR
+      y <- results2$refSR
       gammaFit <- nls(y ~ SR_CourseCorrection(x, 
                                               alpha,
                                               beta,
@@ -44,6 +46,6 @@ getCourseCorrection <- function(race,
     }
   }
   courseCorrections <- data.frame(raceID = race, gamma = courseCorrections)
+  courseCorrections$raceID <- as.character(courseCorrections$raceID)
   return(courseCorrections)
 }
-""
