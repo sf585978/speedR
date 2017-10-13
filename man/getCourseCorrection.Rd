@@ -4,8 +4,8 @@
 \alias{getCourseCorrection}
 \title{Get Course Correction Parameter}
 \usage{
-getCourseCorrection(race, results, referenceRunners, alpha = 4.4,
-  beta = 2355, baseID = "8306")
+getCourseCorrection(race, results, referenceRunners, guess, alpha = 4.4,
+  beta = 2355, baseID = "mGeneseo15")
 }
 \arguments{
 \item{race}{The numeric ID of the race you want to estimate the correction for}
@@ -17,7 +17,7 @@ gammaFit The best fit estimate for the course correction parameter, gamma.
 This function estimates and returns the course correction parameter, gamma, for courses that are not the base course.
 }
 \examples{
-getCourseCorrection(9198, 8)
+getCourseCorrection(race = "mWilliams15", results, referenceRunners, guess, baseID = "mGeneseo15")
 }
 \keyword{country,}
 \keyword{cross}

@@ -1,3 +1,14 @@
+#' Get Updating Reference Speed Rating
+#' 
+#' This function inputs a master file of speed ratings for a year and a list of races and returns a list of updated reference speed ratings for the runners contained in the master list.
+#' @param allSpeedRatings The master speed rating data frame
+#' @param races The list of races in chronological order
+#' @return updatedReferences The data frame of updated reference speed ratings
+#' @keywords speed rating, cross country, handicapping
+#' @export
+#' @examples 
+#' getUpdatedRefSR(allSpeedRatings, c("mOswego17", "mWilliams17", "mGeneseo17"))
+
 getUpdatedRefSR <- function(allSpeedRatings, races) {
   nameSchool <- unique(allSpeedRatings[c("Name", "School")])
   out <- numeric(nrow(unique(allSpeedRatings[c("Name", "School")])))
@@ -18,7 +29,7 @@ getUpdatedRefSR <- function(allSpeedRatings, races) {
       out[i] <- mean(individualResults$`Speed Rating`)
     }
   }
-    out.df <- as.data.frame(cbind(nameSchool, out))
-    colnames(out.df) <- c("name", "school", "refSR")
-    return(out.df)
+    updatedReferences <- as.data.frame(cbind(nameSchool, out))
+    colnames(updatedReferences) <- c("name", "school", "refSR")
+    return(updatedReferences)
 }
