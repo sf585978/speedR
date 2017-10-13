@@ -6,7 +6,7 @@
 #' @keywords speed rating, cross country, handicapping
 #' @export
 #' @examples 
-#' getCourseCorrection(9198, 8)
+#' getCourseCorrection(race = "mWilliams15", results, referenceRunners, guess, baseID = "mGeneseo15")
 
 getCourseCorrection <- function(race,
                                 results,
@@ -14,7 +14,7 @@ getCourseCorrection <- function(race,
                                 guess,
                                 alpha = 4.4, 
                                 beta = 2355, 
-                                baseID = "8306") {
+                                baseID = "mGeneseo15") {
   courseCorrections <- numeric(length(race))
   require(readr)
   require(dplyr)
@@ -31,13 +31,33 @@ getCourseCorrection <- function(race,
                                                                0.95)) %>%
                                      inner_join(referenceRunners,
                                                 by = c("name", "school")))
+      if(nrow(results2) == 0) {
+        message(paste("No reference runners found for ", race[i], ".", sep =""))
+        courseCorrections[i] <- NA
+        next()
+      }
       x <- results2$seconds
       y <- results2$refSR
-      gammaFit <- nls(y ~ SR_CourseCorrection(x, 
+      tt <- try(
+      nls(y ~ SR_CourseCorrection(x, 
                                               alpha,
                                               beta,
                                               gamma), 
-                      start = list(gamma = guess))
+                      start = list(gamma = guess), control = (maxiter = 500))
+      )
+      if (is(tt, "try-error")) {
+        message(paste("There was a problem with estimating the course correction for ",
+                      race[i], ".", sep = ""))
+        courseCorrections[i] <- NA
+        next()
+      } else {
+        gammaFit <- nls(y ~ SR_CourseCorrection(x, 
+                                                alpha,
+                                                beta,
+                                                gamma), 
+                        start = list(gamma = guess), 
+                        control = (maxiter = 500))
+      }
       plot(x, y)
       curve(SR_CourseCorrection(x, alpha, beta, gammaFit$m$getPars()), 
             add = TRUE,
