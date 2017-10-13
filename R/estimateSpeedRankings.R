@@ -18,7 +18,7 @@ estimateSpeedRankings <- function(race,
                                   results, 
                                   courseCorrections, 
                                   alpha = 4.4,
-                                  beta = 2355) {
+                                  beta = 2355, conversion = 1) {
   require(dplyr)
   # gamma <- courseCorrections$gamma[which(courseCorrections$raceID == race)]
   # x <- results$seconds[which(results$raceID == race)]
@@ -31,6 +31,7 @@ estimateSpeedRankings <- function(race,
     filter(raceID == race) %>%
     select(seconds) %>%
     as.vector()
+  x <- x * conversion
   runners <- results %>%
     filter(raceID == race) %>%
     select(name) %>%
