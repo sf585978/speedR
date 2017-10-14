@@ -58,7 +58,7 @@ getCourseCorrection <- function(race,
                         start = list(gamma = guess), 
                         control = (maxiter = 500))
       }
-      plot(x, y)
+      plot(x, y, main = race[i])
       curve(SR_CourseCorrection(x, alpha, beta, gammaFit$m$getPars()), 
             add = TRUE,
             col = "red")
