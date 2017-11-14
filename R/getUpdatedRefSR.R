@@ -9,7 +9,7 @@
 #' @examples
 #' getUpdatedRefSR(allSpeedRatings, c("mOswego17", "mWilliams17", "mGeneseo17"))
 
-getUpdatedRefSR <- function(allSpeedRatings, races, updatedReference) {
+getUpdatedRefSR <- function(allSpeedRatings, races) {
   require(dplyr)
   runners2beUpdated <- allSpeedRatings %>%
     filter(Race == races[length(races)])
