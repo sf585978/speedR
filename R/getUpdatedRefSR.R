@@ -24,11 +24,11 @@ getUpdatedRefSR <- function(allSpeedRatings, races, updatedReference) {
     nResults <- length(individualResults$`Speed Rating`)
     if (nResults > 2) {
       numerator <- sum(individualResults$`Speed Rating`) +
-        max(individualResults$`Speed Rating`) +
-        0.5 * individualResults$`Speed Rating`[which(individualResults$Race ==
+        (nResults - 1) * max(individualResults$`Speed Rating`) +
+        individualResults$`Speed Rating`[which(individualResults$Race ==
                                                        races[max(which(races %in%
                                                                          individualResults$Race))])]
-      denominator <- nResults + 1.5
+      denominator <- 2 * nResults
       out[i] <- numerator / denominator
     } else {
       out[i] <- mean(individualResults$`Speed Rating`)
