@@ -11,8 +11,8 @@
 
 getUpdatedRefSR <- function(allSpeedRatings, races) {
   uniques <- unique(allSpeedRatings[c("Name", "School")])
-  out <- numeric(length(nResults))
-  for (i in 1:length(nResults)) {
+  out <- numeric(length(uniques$Name))
+  for (i in 1:length(uniques$Name)) {
     individualResults <- allSpeedRatings %>%
       filter(Name == uniques$Name[i]) %>%
       filter(School == uniques$School[i])
