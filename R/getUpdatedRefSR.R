@@ -22,17 +22,15 @@ getUpdatedRefSR <- function(allSpeedRatings, races) {
       filter(Name == nameSchool$Name[i]) %>%
       filter(School == nameSchool$School[i])
     nResults <- length(individualResults$`Speed Rating`)
-    if (nResults > 2) {
-      numerator <- sum(individualResults$`Speed Rating`) +
-        (nResults - 1) * max(individualResults$`Speed Rating`) +
-        individualResults$`Speed Rating`[which(individualResults$Race ==
-                                                       races[max(which(races %in%
-                                                                         individualResults$Race))])]
-      denominator <- 2 * nResults
-      out[i] <- numerator / denominator
-    } else {
-      out[i] <- mean(individualResults$`Speed Rating`)
-    }
+    # if (nResults > 2) {
+      w <- rep(1, nResults)
+      w[which(individualResults$`Speed Rating` ==
+                      max(individualResults$`Speed Rating`))] <- nResults
+      w[nResults] <- w[nResults] + ((1 / 3) * nResults)
+      out[i] <- weighted.mean(individualResults$`Speed Rating`, w = w)
+    # } else {
+    #   out[i] <- mean(individualResults$`Speed Rating`)
+    # }
   }
     updatedReferences <- as.data.frame(cbind(nameSchool, out))
     colnames(updatedReferences) <- c("name", "school", "refSR")
