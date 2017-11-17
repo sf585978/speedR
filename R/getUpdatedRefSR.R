@@ -9,7 +9,7 @@
 #' @examples
 #' getUpdatedRefSR(allSpeedRatings, c("mOswego17", "mWilliams17", "mGeneseo17"))
 
-getUpdatedRefSR <- function(allSpeedRatings, races) {
+getUpdatedRefSR <- function(allSpeedRatings, races, updatedReference = NULL) {
   require(dplyr)
   runners2beUpdated <- allSpeedRatings %>%
     filter(Race == races[length(races)])
@@ -32,10 +32,12 @@ getUpdatedRefSR <- function(allSpeedRatings, races) {
     #   out[i] <- mean(individualResults$`Speed Rating`)
     # }
   }
-    updatedReferences <- as.data.frame(cbind(nameSchool, out))
-    colnames(updatedReferences) <- c("name", "school", "refSR")
+  updatedReferences <- as.data.frame(cbind(nameSchool, out))
+  colnames(updatedReferences) <- c("name", "school", "refSR")
+  if (missing(updatedReference) == FALSE) {
     updatedReference <- updatedReference %>%
       anti_join(updatedReferences, by = c("name", "school"))
     updatedReference <- rbind(updatedReference, updatedReferences)
-    return(updatedReferences)
+  }
+  return(updatedReferences)
 }
