@@ -9,35 +9,21 @@
 #' @examples
 #' getUpdatedRefSR(allSpeedRatings, c("mOswego17", "mWilliams17", "mGeneseo17"))
 
-getUpdatedRefSR <- function(allSpeedRatings, races, updatedReference = NULL) {
-  require(dplyr)
-  runners2beUpdated <- allSpeedRatings %>%
-    filter(Race == races[length(races)])
-  allSpeedRatingsFilter <- allSpeedRatings %>%
-    filter(Name %in% runners2beUpdated$Name)
-  nameSchool <- unique(allSpeedRatingsFilter[c("Name", "School")])
-  out <- numeric(nrow(unique(allSpeedRatingsFilter[c("Name", "School")])))
-  for (i in 1:nrow(unique(allSpeedRatingsFilter[c("Name", "School")]))) {
-    individualResults <- allSpeedRatingsFilter %>%
-      filter(Name == nameSchool$Name[i]) %>%
-      filter(School == nameSchool$School[i])
+getUpdatedRefSR <- function(allSpeedRatings, races) {
+  uniques <- unique(allSpeedRatings[c("Name", "School")])
+  out <- numeric(length(nResults))
+  for (i in 1:length(nResults)) {
+    individualResults <- allSpeedRatings %>%
+      filter(Name == uniques$Name[i]) %>%
+      filter(School == uniques$School[i])
     nResults <- length(individualResults$`Speed Rating`)
-    # if (nResults > 2) {
-      w <- rep(1, nResults)
-      w[which(individualResults$`Speed Rating` ==
-                      max(individualResults$`Speed Rating`))] <- nResults
-      w[nResults] <- w[nResults] + ((1 / 3) * nResults)
-      out[i] <- weighted.mean(individualResults$`Speed Rating`, w = w)
-    # } else {
-    #   out[i] <- mean(individualResults$`Speed Rating`)
-    # }
+    w <- rep(1, nResults)
+    w[which(individualResults$`Speed Rating` ==
+              max(individualResults$`Speed Rating`))] <- nResults
+    w[nResults] <- w[nResults] + ((1 / 3) * nResults)
+    out[i] <- weighted.mean(individualResults$`Speed Rating`, w = w)
   }
-  updatedReferences <- as.data.frame(cbind(nameSchool, out))
+  updatedReferences <- as.data.frame(cbind(uniques, out))
   colnames(updatedReferences) <- c("name", "school", "refSR")
-  if (missing(updatedReference) == FALSE) {
-    updatedReference <- updatedReference %>%
-      anti_join(updatedReferences, by = c("name", "school"))
-    updatedReference <- rbind(updatedReference, updatedReferences)
-  }
   return(updatedReferences)
 }
