@@ -11,6 +11,7 @@
 
 getUpdatedRefSR <- function(allSpeedRatings, races) {
   uniques <- unique(allSpeedRatings[c("Name", "School")])
+  counts <- numeric(length(uniques$Name))
   out <- numeric(length(uniques$Name))
   for (i in 1:length(uniques$Name)) {
     individualResults <- allSpeedRatings %>%
@@ -38,8 +39,9 @@ getUpdatedRefSR <- function(allSpeedRatings, races) {
     }
     w[nResults] <- w[nResults] + 0.5
     out[i] <- weighted.mean(individualResults$`Speed Rating`, w = w)
+    counts[i] <- length(individualResults$`Speed Rating`)
   }
-  updatedReferences <- as.data.frame(cbind(uniques, out))
-  colnames(updatedReferences) <- c("name", "school", "refSR")
+  updatedReferences <- as.data.frame(cbind(uniques, out, counts))
+  colnames(updatedReferences) <- c("name", "school", "refSR", "Number of Races")
   return(updatedReferences)
 }
