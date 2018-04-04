@@ -18,9 +18,16 @@ getUpdatedRefSR <- function(allSpeedRatings, races) {
       filter(School == uniques$School[i])
     nResults <- length(individualResults$`Speed Rating`)
     w <- rep(1, nResults)
-    w[which(individualResults$`Speed Rating` ==
-              max(individualResults$`Speed Rating`))] <- nResults
-    w[nResults] <- w[nResults] + ((1 / 3) * nResults)
+    # w[which(individualResults$`Speed Rating` ==
+    #           max(individualResults$`Speed Rating`))] <- nResults
+    if (individualResults$Week[i] %in% c("Week 1", "Week 2", "Week 3")) {
+      w[i] <- 0.5
+    }
+    if (individualResults$Week[i] %in% c("Week 9", "Week 10", "Week 11",
+                                         "Week 12")) {
+      w[i] <- 1.5
+    }
+    w[nResults] <- w[nResults] + 0.5
     out[i] <- weighted.mean(individualResults$`Speed Rating`, w = w)
   }
   updatedReferences <- as.data.frame(cbind(uniques, out))
