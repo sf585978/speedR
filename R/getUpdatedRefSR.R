@@ -20,18 +20,21 @@ getUpdatedRefSR <- function(allSpeedRatings, races) {
     w <- rep(1, nResults)
     # w[which(individualResults$`Speed Rating` ==
     #           max(individualResults$`Speed Rating`))] <- nResults
-    if (individualResults$Week[i] %in% c("Week 1", "Week 2", "Week 3", "Preseason")) {
-      w[i] <- 0.5
-    }
-    if (individualResults$Week[i] %in% c("Week 9", "Week 10", "Week 11",
-                                         "Week 12")) {
-      w[i] <- 1.5
-    }
-    if (individualResults$`Speed Rating`[i] /
-        mean(individualResults$`Speed Rating`) > 1.1 |
-             individualResults$`Speed Rating`[i] /
-             mean(individualResults$`Speed Rating`) < 0.9) {
-      w[i] <- w[i] - 0.25
+    for (j in 1 : length(individualResults$Name)) {
+      if (individualResults$Week[i] %in% c("Week 1", "Week 2", "Week 3",
+                                           "Preseason")) {
+        w[j] <- 0.5
+      }
+      if (individualResults$Week[i] %in% c("Week 9", "Week 10", "Week 11",
+                                           "Week 12")) {
+        w[j] <- 1.5
+      }
+      if ((individualResults$`Speed Rating`[j] /
+           mean(individualResults$`Speed Rating`)) > 1.1 |
+          (individualResults$`Speed Rating`[j] /
+           mean(individualResults$`Speed Rating`)) < 0.9) {
+        w[j] <- w[j] - 0.25
+      }
     }
     w[nResults] <- w[nResults] + 0.5
     out[i] <- weighted.mean(individualResults$`Speed Rating`, w = w)
