@@ -20,7 +20,7 @@ estimateSpeedRankings <- function(race,
                                   courseCorrections,
                                   alpha = 4.4,
                                   beta = 2355, conversion = 1,
-                                  week) {
+                                  week, ref = ur) {
   require(dplyr)
   # gamma <- courseCorrections$gamma[which(courseCorrections$raceID == race)]
   # x <- results$seconds[which(results$raceID == race)]
@@ -50,5 +50,13 @@ estimateSpeedRankings <- function(race,
                                                  gamma), weekID))
   colnames(obj) <- c("Name", "School", "Seconds", "Race", "Speed Rating",
                      "Week")
-  return(obj)
+  if (missing(ref)) {
+    return(obj)
+  } else {
+    obj <- obj %>%
+      left_join(ur, by = c("Name" = "name")) %>%
+      mutate(Difference = `Speed Rating` - refSR) %>%
+      select(Name, School, Seconds, Race, `Speed Rating`, Difference)
+    return(obj)
+  }
 }
