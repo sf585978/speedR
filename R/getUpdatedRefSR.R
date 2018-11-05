@@ -4,18 +4,19 @@
 #' @param allSpeedRatings The master speed rating data frame
 #' @param updatedReference The master updated reference data frame
 #' @param race The raceID for the newest race
+#' @param year The year of the current race
 #' @return updatedReferences The data frame of updated reference speed ratings
 #' @keywords speed rating, cross country, handicapping
 #' @export
 #' @examples
 #' getUpdatedRefSR(allSpeedRatings, c("mOswego17", "mWilliams17", "mGeneseo17"))
 
-getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race) {
+getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race, year) {
   require(dplyr)
   require(progress)
   uniques <- allSpeedRatings %>%
     filter(Race == race)
-  uniques <- unique(uniques[c("Name", "School")])
+  uniques <- unique(uniques[c("Name", "School", "Year")])
   counts <- numeric(length(uniques$Name))
   out <- numeric(length(uniques$Name))
   years <-numeric(length(uniques$Name))
@@ -29,19 +30,23 @@ getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race) {
     # w[which(individualResults$`Speed Rating` ==
     #           max(individualResults$`Speed Rating`))] <- nResults
     for (j in 1 : length(individualResults$Name)) {
-      if (individualResults$Week[i] %in% c("Week 1", "Week 2", "Week 3",
-                                           "Preseason")) {
-        w[j] <- 0.5
-      }
-      if (individualResults$Week[i] %in% c("Week 9", "Week 10", "Week 11",
-                                           "Week 12")) {
-        w[j] <- 1.5
-      }
-      if ((individualResults$`Speed Rating`[j] /
-           mean(individualResults$`Speed Rating`)) > 1.1 |
-          (individualResults$`Speed Rating`[j] /
-           mean(individualResults$`Speed Rating`)) < 0.9) {
-        w[j] <- w[j] - 0.25
+      if (individualResults$Year != year) {
+        w[j] <- 0.25
+      } else {
+        if (individualResults$Week[i] %in% c("Week 1", "Week 2", "Week 3",
+                                             "Preseason")) {
+          w[j] <- 0.5
+        }
+        if (individualResults$Week[i] %in% c("Week 9", "Week 10", "Week 11",
+                                             "Week 12")) {
+          w[j] <- 1.5
+        }
+        if ((individualResults$`Speed Rating`[j] /
+             mean(individualResults$`Speed Rating`)) > 1.1 |
+            (individualResults$`Speed Rating`[j] /
+             mean(individualResults$`Speed Rating`)) < 0.9) {
+          w[j] <- w[j] - 0.25
+        }
       }
     }
     w[nResults] <- w[nResults] + 0.5
