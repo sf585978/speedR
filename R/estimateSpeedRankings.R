@@ -20,7 +20,7 @@ estimateSpeedRankings <- function(race,
                                   courseCorrections,
                                   alpha = 4.4,
                                   beta = 2355, conversion = 1,
-                                  week, ref = ur) {
+                                  week, year, ref = ur) {
   require(dplyr)
   # gamma <- courseCorrections$gamma[which(courseCorrections$raceID == race)]
   # x <- results$seconds[which(results$raceID == race)]
@@ -44,12 +44,13 @@ estimateSpeedRankings <- function(race,
     as.vector()
   raceID <- rep(race, length(x))
   weekID <- rep(week, length(x))
+  yearID <- rep(year, length(x))
   obj <- as.data.frame(cbind(runners, schools, x, raceID,
                              SR_CourseCorrection(x,
                                                  alpha, beta,
-                                                 gamma), weekID))
+                                                 gamma), weekID, yearID))
   colnames(obj) <- c("Name", "School", "Seconds", "Race", "Speed Rating",
-                     "Week")
+                     "Week", "Year")
   if (missing(ref)) {
     return(obj)
   } else {
