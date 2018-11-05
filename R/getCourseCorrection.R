@@ -38,12 +38,15 @@ getCourseCorrection <- function(race,
       }
       x <- results2$seconds
       y <- results2$refSR
+      weights <- 1 - (results2$place/400)
       tt <- try(
-      nls(y ~ SR_CourseCorrection(x, 
-                                              alpha,
-                                              beta,
-                                              gamma), 
-                      start = list(gamma = guess), control = (maxiter = 500))
+        nls(y ~ SR_CourseCorrection(x, 
+                                    alpha,
+                                    beta,
+                                    gamma),
+            weights = weights,
+            start = list(gamma = guess), 
+            control = (maxiter = 500))
       )
       if (is(tt, "try-error")) {
         message(paste("There was a problem with estimating the course correction for ",
@@ -55,6 +58,7 @@ getCourseCorrection <- function(race,
                                                 alpha,
                                                 beta,
                                                 gamma), 
+                        weights = weights,
                         start = list(gamma = guess), 
                         control = (maxiter = 500))
       }
