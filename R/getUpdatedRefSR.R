@@ -30,8 +30,8 @@ getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race, year) {
     # w[which(individualResults$`Speed Rating` ==
     #           max(individualResults$`Speed Rating`))] <- nResults
     for (j in 1 : length(individualResults$Name)) {
-      if (individualResults$Year != year) {
-        w[j] <- 0.25
+      if (individualResults$Year[j] != year) {
+        w[j] <- 0.1/(year - individualResults$Year[j])
       } else {
         if (individualResults$Week[i] %in% c("Week 1", "Week 2", "Week 3",
                                              "Preseason")) {
