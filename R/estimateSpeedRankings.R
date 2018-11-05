@@ -54,7 +54,7 @@ estimateSpeedRankings <- function(race,
     return(obj)
   } else {
     obj <- obj %>%
-      left_join(ref, by = c("Name" = "name")) %>%
+      inside_join(ref, by = c("Name" = "name")) %>%
       mutate(Reference = refSR,
              Difference = `Speed Rating` - refSR) %>%
       select(Name, School, Seconds, Race, Week, `Speed Rating`,
