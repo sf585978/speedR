@@ -9,6 +9,7 @@
 #' @param alpha The number of seconds equal to one speed point
 #' @param beta The centering parameter
 #' @param week The week of the race
+#' @param year The year of the race
 #' @keywords speed rating, cross crountry, handicapping
 #' @export
 #' @examples
