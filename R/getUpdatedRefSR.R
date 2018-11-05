@@ -18,7 +18,7 @@ getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race) {
   uniques <- unique(uniques[c("Name", "School")])
   counts <- numeric(length(uniques$Name))
   out <- numeric(length(uniques$Name))
-  years <- rep(year, length(uniques$Name))
+  years <-numeric(length(uniques$Name))
   pb <- progress_bar$new(total = length(uniques$Name))
   for (i in 1:length(uniques$Name)) {
     individualResults <- allSpeedRatings %>%
