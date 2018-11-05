@@ -21,7 +21,7 @@ estimateSpeedRankings <- function(race,
                                   courseCorrections,
                                   alpha = 4.4,
                                   beta = 2355, conversion = 1,
-                                  week, year, ref = ur) {
+                                  week, year, ref = updatedReference) {
   require(dplyr)
   # gamma <- courseCorrections$gamma[which(courseCorrections$raceID == race)]
   # x <- results$seconds[which(results$raceID == race)]
