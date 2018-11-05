@@ -55,7 +55,7 @@ getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race, year) {
     years[i] <- max(individualResults$Year)
     pb$tick()
   }
-  updatedReferences <- as.data.frame(cbind(uniques, out, counts, years))
+  updatedReferences <- as.data.frame(cbind(uniques[, 1:2], out, counts, years))
   colnames(updatedReferences) <- c("name", "school", "refSR", "Number of Races",
                                    "Most Recent Year")
 
