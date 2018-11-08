@@ -20,7 +20,7 @@ getCourseCorrection <- function(results,
                                 lower_thresh = 0.1,
                                 upper_thresh = 1,
                                 baseID = "mGeneseo15",
-                                baseIntercept = 1527.197) {
+                                baseIntercept = 1531.96) {
   require(readr)
   require(dplyr)
   require(ggplot2)
@@ -62,12 +62,13 @@ getCourseCorrection <- function(results,
       xlab("Place") +
       ylab("Seconds") +
       ggtitle(paste("Seconds against Place - ", 
-                    results$raceID[1], 
-                    " - Intercept = ", 
-                    intercept,
-                    " - Course Correction = ",
-                    courseCorrection,
-                    sep = "")))
+                    results$raceID[1],
+                    sep = ""),
+      subtitle = paste("Intercept = ", 
+                       intercept,
+                       ", Course Correction = ",
+                       courseCorrection, sep = "")))
   }
   return(courseCorrection)
 }
+
