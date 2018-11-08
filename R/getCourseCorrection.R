@@ -1,75 +1,35 @@
 #' Get Course Correction Parameter
 #' 
 #' This function estimates and returns the course correction parameter, gamma, for courses that are not the base course.
-#' @param race The numeric ID of the race you want to estimate the correction for
+#' @param results The results for the race you are speed rating
+#' @param alpha The number of seconds one speed rating point is equal to
+#' @param beta The number of seconds marking the zero point of the scale
+#' @param lower_thresh The quantile results must be greater than to contribute to calculating the course correction
+#' @param upper_thresh The quantile results must be less than to contribute to calculating the course correction
+#' @param baseID The race ID for the base race
+#' @param baseIntercept The regression intercept for the base race
 #' @return gammaFit The best fit estimate for the course correction parameter, gamma.
 #' @keywords speed rating, cross country, handicapping
 #' @export
 #' @examples 
-#' getCourseCorrection(race = "mWilliams15", results, referenceRunners, guess, baseID = "mGeneseo15")
+#' getCourseCorrection(results = geneseo16, alpha = 4.4, beta = 2355, lower_thresh = 0.1, upper_thresh = 0.95, baseID = "mGeneseo15", baseIntercept = 1527.197)
 
-getCourseCorrection <- function(race,
-                                results,
-                                referenceRunners,
-                                guess,
+getCourseCorrection <- function(results,
                                 alpha = 4.4, 
-                                beta = 2355, 
-                                baseID = "mGeneseo15") {
-  courseCorrections <- numeric(length(race))
+                                beta = 2355,
+                                lower_thresh = 0.1,
+                                upper_thresh = 1,
+                                baseID = "mGeneseo15",
+                                baseIntercept = 1527.197) {
   require(readr)
   require(dplyr)
-  for(i in 1:length(race)) {
-    if (race[i] == baseID) {
-      message("Race is same as base race.")
-      courseCorrections[i] <- 0
-    } else {
-      results2 <- suppressWarnings(results %>%
-                                     filter(raceID == race[i]) %>%
-                                     filter(seconds > quantile(seconds, 
-                                                               0.03)) %>%
-                                     filter(seconds < quantile(seconds,
-                                                               0.95)) %>%
-                                     inner_join(referenceRunners,
-                                                by = c("name", "school")))
-      if(nrow(results2) == 0) {
-        message(paste("No reference runners found for ", race[i], ".", sep =""))
-        courseCorrections[i] <- NA
-        next()
-      }
-      x <- results2$seconds
-      y <- results2$refSR
-      weights <- 1 - (results2$place/400)
-      tt <- try(
-        nls(y ~ SR_CourseCorrection(x, 
-                                    alpha,
-                                    beta,
-                                    gamma),
-            weights = weights,
-            start = list(gamma = guess), 
-            control = (maxiter = 500))
-      )
-      if (is(tt, "try-error")) {
-        message(paste("There was a problem with estimating the course correction for ",
-                      race[i], ".", sep = ""))
-        courseCorrections[i] <- NA
-        next()
-      } else {
-        gammaFit <- nls(y ~ SR_CourseCorrection(x, 
-                                                alpha,
-                                                beta,
-                                                gamma), 
-                        weights = weights,
-                        start = list(gamma = guess), 
-                        control = (maxiter = 500))
-      }
-      plot(x, y, main = race[i])
-      curve(SR_CourseCorrection(x, alpha, beta, gammaFit$m$getPars()), 
-            add = TRUE,
-            col = "red")
-      courseCorrections[i] <- gammaFit$m$getPars()
-    }
+  if (results$raceID[1] == baseID) {
+    message("Race is same as the base race.")
+    courseCorrection <- 0
+  } else {
+    m0 <- lm(seconds ~ place, data = results)
+    intercept <- m0$coefficients[1]
+    courseCorrection <- intercept - baseIntercept
   }
-  courseCorrections <- data.frame(raceID = race, gamma = courseCorrections)
-  courseCorrections$raceID <- as.character(courseCorrections$raceID)
-  return(courseCorrections)
+  return(courseCorrection)
 }
