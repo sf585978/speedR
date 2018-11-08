@@ -4,11 +4,24 @@
 \alias{getCourseCorrection}
 \title{Get Course Correction Parameter}
 \usage{
-getCourseCorrection(race, results, referenceRunners, guess, alpha = 4.4,
-  beta = 2355, baseID = "mGeneseo15")
+getCourseCorrection(results, alpha = 4.4, beta = 2355,
+  lower_thresh = 0.1, upper_thresh = 1, baseID = "mGeneseo15",
+  baseIntercept = 1527.197)
 }
 \arguments{
-\item{race}{The numeric ID of the race you want to estimate the correction for}
+\item{results}{The results for the race you are speed rating}
+
+\item{alpha}{The number of seconds one speed rating point is equal to}
+
+\item{beta}{The number of seconds marking the zero point of the scale}
+
+\item{lower_thresh}{The quantile results must be greater than to contribute to calculating the course correction}
+
+\item{upper_thresh}{The quantile results must be less than to contribute to calculating the course correction}
+
+\item{baseID}{The race ID for the base race}
+
+\item{baseIntercept}{The regression intercept for the base race}
 }
 \value{
 gammaFit The best fit estimate for the course correction parameter, gamma.
@@ -17,7 +30,7 @@ gammaFit The best fit estimate for the course correction parameter, gamma.
 This function estimates and returns the course correction parameter, gamma, for courses that are not the base course.
 }
 \examples{
-getCourseCorrection(race = "mWilliams15", results, referenceRunners, guess, baseID = "mGeneseo15")
+getCourseCorrection(results = geneseo16, alpha = 4.4, beta = 2355, lower_thresh = 0.1, upper_thresh = 0.95, baseID = "mGeneseo15", baseIntercept = 1527.197)
 }
 \keyword{country,}
 \keyword{cross}

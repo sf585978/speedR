@@ -27,9 +27,7 @@ estimateSpeedRankings <- function(race,
   # x <- results$seconds[which(results$raceID == race)]
   # runners <- results$name[which(results$raceID == race)]
   # schools  <- results$school[which(results$raceID == race)]
-  gamma <- courseCorrections %>%
-    filter(raceID == race) %>%
-    select(gamma)
+  gamma <- courseCorrections
   x <- results %>%
     filter(raceID == race) %>%
     select(seconds) %>%
