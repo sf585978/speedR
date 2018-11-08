@@ -54,7 +54,11 @@ courseCorrectionDiagPlot <- function(results,
               legend.background = element_rect(fill = "gray90", 
                                                size = .5, 
                                                linetype = "dotted")) +
-        ggtitle("Performance Against Expected") +
+        ggtitle(paste("Performance Against Expected - ", 
+                      results2$raceID[1], 
+                      " - Course Correction = ",
+                      gamma,
+                      sep = "")) +
         labs(caption = "Blue line indicates estimated speed rating. Labels are included for runners who were in the top 5% of difference from their expected performance.")
   }
 }
