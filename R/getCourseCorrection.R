@@ -23,13 +23,49 @@ getCourseCorrection <- function(results,
                                 baseIntercept = 1527.197) {
   require(readr)
   require(dplyr)
+  require(ggplot2)
+  require(ggrepel)
+  
   if (results$raceID[1] == baseID) {
     message("Race is same as the base race.")
     courseCorrection <- 0
   } else {
+    results <- results %>%
+      filter(place < quantile(place, (1 - lower_thresh)),
+             place > quantile(place, (1 - upper_thresh)))
     m0 <- lm(seconds ~ place, data = results)
     intercept <- m0$coefficients[1]
     courseCorrection <- intercept - baseIntercept
+    output <- data.frame(label = c(baseID, results$raceID[1]),
+                         x = c(0, 0),
+                         y = c(baseIntercept, intercept),
+                         color = c("blue", "red"))
+    print(ggplot(results, aes(x = place, y = seconds)) +
+            geom_point() +
+            geom_point(aes(x = 0, y = intercept), size = 3, color = "red") +
+            geom_point(aes(x = 0, y = baseIntercept), 
+                       size = 3, 
+                       color = "blue") +
+            geom_label_repel(data = output, 
+                             aes(x = x, y = y, label = label, color = color),
+                             force = 10,
+                             min.segment.length = unit(1, 'lines'),
+                             nudge_y = 10) +
+            scale_color_manual(guide = FALSE, values = c("blue", "red")) +
+            # geom_label_repel(aes(x = 0, y = intercept), 
+            #                  label = results$raceID[1],
+            #                  color = "red") +
+            geom_smooth(method = "lm", se = FALSE, color = "red") +
+      theme_bw() +
+      xlab("Place") +
+      ylab("Seconds") +
+      ggtitle(paste("Seconds against Place - ", 
+                    results$raceID[1], 
+                    " - Intercept = ", 
+                    intercept,
+                    " - Course Correction = ",
+                    courseCorrection,
+                    sep = "")))
   }
   return(courseCorrection)
 }
