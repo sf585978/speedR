@@ -4,18 +4,22 @@
 \alias{getUpdatedRefSR}
 \title{Get Updating Reference Speed Rating}
 \usage{
-getUpdatedRefSR(allSpeedRatings, races)
+getUpdatedRefSR(allSpeedRatings, updatedReference, race, year)
 }
 \arguments{
 \item{allSpeedRatings}{The master speed rating data frame}
 
-\item{races}{The list of races in chronological order}
+\item{updatedReference}{The master updated reference data frame}
+
+\item{race}{The raceID for the newest race}
+
+\item{year}{The year of the current race}
 }
 \value{
 updatedReferences The data frame of updated reference speed ratings
 }
 \description{
-This function inputs a master file of speed ratings for a year and a list of races and returns a list of updated reference speed ratings for the runners contained in the master list.
+This function inputs a master file of speed ratings and references and returns a list of updated reference speed ratings for the runners contained in the master list.
 }
 \examples{
 getUpdatedRefSR(allSpeedRatings, c("mOswego17", "mWilliams17", "mGeneseo17"))

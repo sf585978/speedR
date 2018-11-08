@@ -5,7 +5,7 @@
 \title{Estimate Speed Ratings}
 \usage{
 estimateSpeedRankings(race, results, courseCorrections, alpha = 4.4,
-  beta = 2355)
+  beta = 2355, conversion = 1, week, year, ref = updatedReference)
 }
 \arguments{
 \item{race}{The race you would like to calculate speed ratings for}
@@ -17,10 +17,14 @@ estimateSpeedRankings(race, results, courseCorrections, alpha = 4.4,
 \item{alpha}{The number of seconds equal to one speed point}
 
 \item{beta}{The centering parameter}
+
+\item{week}{The week of the race}
+
+\item{year}{The year of the race}
 }
 \description{
-This function estimates speed ratings for a course with a course correction 
-and returns an easy to interpret data frame of results with the estimated 
+This function estimates speed ratings for a course with a course correction
+and returns an easy to interpret data frame of results with the estimated
 speed ratings.
 }
 \examples{

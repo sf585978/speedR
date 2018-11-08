@@ -1,4 +1,4 @@
-#' Get Course Correction Parameter
+#' Get Course Correction Parameter Using Average Difference from Expectation
 #' 
 #' This function estimates and returns the course correction parameter, gamma, for courses that are not the base course.
 #' @param race The numeric ID of the race you want to estimate the correction for
@@ -6,7 +6,7 @@
 #' @keywords speed rating, cross country, handicapping
 #' @export
 #' @examples 
-#' getCourseCorrection(race = "mWilliams15", results, referenceRunners, guess, baseID = "mGeneseo15")
+#' getCourseCorrection_avgDiff(race = "mWilliams15", results, referenceRunners, guess, baseID = "mGeneseo15")
 
 getCourseCorrection_avgDiff <- function(results,
                                         referenceRunners,
