@@ -28,12 +28,14 @@ courseCorrectionDiagPlot <- function(results,
     message(paste("No reference runners found for ", race[i], ".", sep =""))
     return()
   } else {
+    x <- results2$seconds
     results2 <- results2 %>%
       mutate(z = SR_CourseCorrection(x, alpha, beta, gamma),
-             cols = ifelse(y > z, "red", "green"),
-             diffs = z - y,
+             cols = ifelse(refSR > z, "red", "green"),
+             diffs = z - refSR,
              label = ifelse(abs(diffs) > quantile(abs(diffs), 0.95), name, NA))
-      ggplot(results2, aes(x = seconds, y = refSR, color = cols)) +
+      
+    ggplot(results2, aes(x = seconds, y = refSR, color = cols)) +
         geom_point() +
         scale_color_manual("Vs. Expectation", 
                            values = c("forestgreen", "red"),
@@ -41,12 +43,14 @@ courseCorrectionDiagPlot <- function(results,
         geom_line(aes(x = x, y = z), color = "blue") +
         geom_label_repel(data = subset(results2, diffs > 0),
                          aes(label = label),
-                         force = 30,
-                         nudge_y = -10) +
+                         force = 50,
+                         nudge_y = -10,
+                         point.padding = 0.5) +
         geom_label_repel(data = subset(results2, diffs < 0),
                          aes(label = label),
-                         force = 30,
-                         nudge_y = 10) +
+                         force = 50,
+                         nudge_y = 10,
+                         point.padding = 0.5) +
         theme_bw() +
         xlab("Seconds") +
         ylab("Expected Speed Rating") +
