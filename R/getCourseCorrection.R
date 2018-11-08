@@ -32,8 +32,9 @@ getCourseCorrection <- function(results,
   } else {
     results <- results %>%
       filter(place < quantile(place, (1 - lower_thresh)),
-             place > quantile(place, (1 - upper_thresh)))
-    m0 <- lm(seconds ~ place, data = results)
+             place > quantile(place, (1 - upper_thresh))) %>%
+      mutate(weight = (1 - (abs(place - (max(place) / 2)) / (max(place) / 2))))
+    m0 <- lm(seconds ~ place, data = results, weights = results$weight)
     intercept <- m0$coefficients[1]
     courseCorrection <- intercept - baseIntercept
     output <- data.frame(label = c(baseID, results$raceID[1]),
@@ -55,7 +56,8 @@ getCourseCorrection <- function(results,
             # geom_label_repel(aes(x = 0, y = intercept), 
             #                  label = results$raceID[1],
             #                  color = "red") +
-            geom_smooth(method = "lm", se = FALSE, color = "red") +
+            geom_smooth(method = "lm", se = FALSE, color = "red",
+                        mapping = aes(weight = weight)) +
       theme_bw() +
       xlab("Place") +
       ylab("Seconds") +
