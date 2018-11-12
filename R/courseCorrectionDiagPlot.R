@@ -25,7 +25,7 @@ courseCorrectionDiagPlot <- function(results,
                                  inner_join(references,
                                             by = c("name", "school")))
   if(nrow(results2) == 0) {
-    message(paste("No reference runners found for ", race[i], ".", sep =""))
+    message(paste("No reference runners found for ", results$raceID[1], ".", sep =""))
     return()
   } else {
     x <- results2$seconds
