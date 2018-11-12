@@ -41,10 +41,17 @@ getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race, year) {
                                              "Week 12")) {
           w[j] <- 1.5
         }
-        if ((individualResults$`Speed Rating`[j] /
-             mean(individualResults$`Speed Rating`)) > 1.1 |
-            (individualResults$`Speed Rating`[j] /
-             mean(individualResults$`Speed Rating`)) < 0.9) {
+        if (mean(individualResults$`Speed Rating`[j]) == 0) {
+          if ((individualResults$`Speed Rating`[j] /
+               1e-6) > 1.1 |
+              (individualResults$`Speed Rating`[j] /
+               1e-6) < 0.9) {
+            w[j] <- w[j] - 0.25
+          }
+        } else if ((individualResults$`Speed Rating`[j] /
+                    mean(individualResults$`Speed Rating`)) > 1.1 |
+                   (individualResults$`Speed Rating`[j] /
+                    mean(individualResults$`Speed Rating`)) < 0.9) {
           w[j] <- w[j] - 0.25
         }
       }
