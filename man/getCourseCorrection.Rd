@@ -6,7 +6,7 @@
 \usage{
 getCourseCorrection(results, alpha = 4.4, beta = 2355,
   lower_thresh = 0.1, upper_thresh = 1, baseID = "mGeneseo15",
-  baseIntercept = 1527.197)
+  baseIntercept = 1531.96)
 }
 \arguments{
 \item{results}{The results for the race you are speed rating}
