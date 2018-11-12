@@ -29,30 +29,32 @@ getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race, year) {
     w <- rep(1, nResults)
     # w[which(individualResults$`Speed Rating` ==
     #           max(individualResults$`Speed Rating`))] <- nResults
-    for (j in 1 : length(individualResults$Name)) {
-      if (individualResults$Year[j] != year) {
-        w[j] <- 0.1/(year - individualResults$Year[j])
-      } else {
-        if (individualResults$Week[i] %in% c("Week 1", "Week 2", "Week 3",
-                                             "Preseason")) {
-          w[j] <- 0.5
-        }
-        if (individualResults$Week[i] %in% c("Week 9", "Week 10", "Week 11",
-                                             "Week 12")) {
-          w[j] <- 1.5
-        }
-        if (mean(individualResults$`Speed Rating`[j]) == 0) {
-          if ((individualResults$`Speed Rating`[j] /
-               1e-6) > 1.1 |
-              (individualResults$`Speed Rating`[j] /
-               1e-6) < 0.9) {
+    if (nrow(individualResults) != 1) {
+      for (j in 1 : length(individualResults$Name)) {
+        if (individualResults$Year[j] != year) {
+          w[j] <- 0.1/(year - individualResults$Year[j])
+        } else {
+          if (individualResults$Week[i] %in% c("Week 1", "Week 2", "Week 3",
+                                               "Preseason")) {
+            w[j] <- 0.5
+          }
+          if (individualResults$Week[i] %in% c("Week 9", "Week 10", "Week 11",
+                                               "Week 12")) {
+            w[j] <- 1.5
+          }
+          if (mean(individualResults$`Speed Rating`[j]) == 0) {
+            if ((individualResults$`Speed Rating`[j] /
+                 1e-6) > 1.1 |
+                (individualResults$`Speed Rating`[j] /
+                 1e-6) < 0.9) {
+              w[j] <- w[j] - 0.25
+            }
+          } else if ((individualResults$`Speed Rating`[j] /
+                      mean(individualResults$`Speed Rating`)) > 1.1 |
+                     (individualResults$`Speed Rating`[j] /
+                      mean(individualResults$`Speed Rating`)) < 0.9) {
             w[j] <- w[j] - 0.25
           }
-        } else if ((individualResults$`Speed Rating`[j] /
-                    mean(individualResults$`Speed Rating`)) > 1.1 |
-                   (individualResults$`Speed Rating`[j] /
-                    mean(individualResults$`Speed Rating`)) < 0.9) {
-          w[j] <- w[j] - 0.25
         }
       }
     }
