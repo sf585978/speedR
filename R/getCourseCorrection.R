@@ -19,7 +19,7 @@ getCourseCorrection <- function(results,
                                 alpha = 4.4, 
                                 beta = 2355,
                                 lower_thresh = 0.5,
-                                upper_thresh = 0.95,
+                                upper_thresh = 1,
                                 race_dist = "8k",
                                 baseID = "mGeneseo15",
                                 baseIntercept = 1531.96) {
@@ -51,13 +51,15 @@ getCourseCorrection <- function(results,
       results$weight[i] <- 
         (nrow(
           results[which(
-            results$seconds %in% 
-              (results$seconds[i] - 25):(results$seconds[i] + 25)), ]
+            results$seconds %in% seq(from = results$seconds[i] - window_l,
+                                     to = results$seconds[i] + window_l,
+                                     by = 0.1)
+          ), ]
         ) - 1) * results$cond[i]
     }
     m0 <- lm(seconds ~ place, data = results, weights = results$weight)
     intercept <- m0$coefficients[1]
-    courseCorrection <- intercept - baseIntercept
+    courseCorrection <- baseIntercept - intercept
     output <- data.frame(label = c(baseID, results$raceID[1]),
                          x = c(0, 0),
                          y = c(baseIntercept, intercept),
