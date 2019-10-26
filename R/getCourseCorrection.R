@@ -6,19 +6,21 @@
 #' @param beta The number of seconds marking the zero point of the scale
 #' @param lower_thresh The quantile results must be greater than to contribute to calculating the course correction
 #' @param upper_thresh The quantile results must be less than to contribute to calculating the course correction
+#' @param race_dist The distance of the race being analyzed
 #' @param baseID The race ID for the base race
 #' @param baseIntercept The regression intercept for the base race
 #' @return gammaFit The best fit estimate for the course correction parameter, gamma.
 #' @keywords speed rating, cross country, handicapping
 #' @export
 #' @examples 
-#' getCourseCorrection(results = geneseo16, alpha = 4.4, beta = 2355, lower_thresh = 0.1, upper_thresh = 0.95, baseID = "mGeneseo15", baseIntercept = 1527.197)
+#' getCourseCorrection(results = geneseo16, alpha = 4.4, beta = 2355, lower_thresh = 0.1, upper_thresh = 0.95, race_dist = "8k", baseID = "mGeneseo15", baseIntercept = 1527.197)
 
 getCourseCorrection <- function(results,
                                 alpha = 4.4, 
                                 beta = 2355,
-                                lower_thresh = 0.1,
-                                upper_thresh = 1,
+                                lower_thresh = 0.5,
+                                upper_thresh = 0.95,
+                                race_dist = "8k",
                                 baseID = "mGeneseo15",
                                 baseIntercept = 1531.96) {
   require(readr)
@@ -26,14 +28,33 @@ getCourseCorrection <- function(results,
   require(ggplot2)
   require(ggrepel)
   
+  if (race_dist == "8k") {
+    window_l = 24
+  } else if (race_dist == "6k") {
+    window_l = 18
+  } else if (race_dist == "5k") {
+    window_l = 15
+  } else if (race_dist == "4k") {
+    window_l = 12
+  }
+  
   if (results$raceID[1] == baseID) {
     message("Race is same as the base race.")
     courseCorrection <- 0
   } else {
     results <- results %>%
-      filter(place < quantile(place, (1 - lower_thresh)),
-             place > quantile(place, (1 - upper_thresh))) %>%
-      mutate(weight = (1 - (abs(place - (max(place) / 2)) / (max(place) / 2))))
+      mutate(cond = ifelse(place < quantile(place, (1 - lower_thresh)) &
+                             place > quantile(place, (1 - upper_thresh)),
+                           1, 0))
+    results$weight <- NA
+    for (i in 1:nrow(results)) {
+      results$weight[i] <- 
+        (nrow(
+          results[which(
+            results$seconds %in% 
+              (results$seconds[i] - 25):(results$seconds[i] + 25)), ]
+        ) - 1) * results$cond[i]
+    }
     m0 <- lm(seconds ~ place, data = results, weights = results$weight)
     intercept <- m0$coefficients[1]
     courseCorrection <- intercept - baseIntercept
