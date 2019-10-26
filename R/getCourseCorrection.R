@@ -51,8 +51,10 @@ getCourseCorrection <- function(results,
       results$weight[i] <- 
         (nrow(
           results[which(
-            results$seconds %in% seq(from = results$seconds[i] - window_l,
-                                     to = results$seconds[i] + window_l,
+            results$seconds %in% seq(from = round(results$seconds[i], 
+                                                  digits = 1) - window_l,
+                                     to = round(results$seconds[i], 
+                                                digits = 1) + window_l,
                                      by = 0.1)
           ), ]
         ) - 1) * results$cond[i]
