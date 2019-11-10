@@ -18,24 +18,26 @@
 getCourseCorrection <- function(results,
                                 alpha = 4.4, 
                                 beta = 2355,
-                                lower_thresh = 0.5,
+                                lower_thresh = 0.7,
                                 upper_thresh = 1,
                                 race_dist = "8k",
                                 baseID = "mGeneseo15",
-                                baseIntercept = 1531.96) {
+                                baseIntercept = 1531.96,
+                                teams_to_drop = NULL) {
   require(readr)
   require(dplyr)
   require(ggplot2)
   require(ggrepel)
+  require(ggpointdensity)
   
   if (race_dist == "8k") {
-    window_l = 24
-  } else if (race_dist == "6k") {
     window_l = 18
-  } else if (race_dist == "5k") {
-    window_l = 15
-  } else if (race_dist == "4k") {
+  } else if (race_dist == "6k") {
     window_l = 12
+  } else if (race_dist == "5k") {
+    window_l = 9
+  } else if (race_dist == "4k") {
+    window_l = 6
   }
   
   if (results$raceID[1] == baseID) {
@@ -45,7 +47,8 @@ getCourseCorrection <- function(results,
     results <- results %>%
       mutate(cond = ifelse(place < quantile(place, (1 - lower_thresh)) &
                              place > quantile(place, (1 - upper_thresh)),
-                           1, 0))
+                           1, 0)) %>%
+      filter(! school %in% teams_to_drop)
     results$weight <- NA
     for (i in 1:nrow(results)) {
       results$weight[i] <- 
@@ -59,6 +62,8 @@ getCourseCorrection <- function(results,
           ), ]
         ) - 1) * results$cond[i]
     }
+    
+    results$weight <- results$weight / max(results$weight)
     m0 <- lm(seconds ~ place, data = results, weights = results$weight)
     intercept <- m0$coefficients[1]
     courseCorrection <- baseIntercept - intercept

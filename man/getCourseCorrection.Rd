@@ -5,8 +5,9 @@
 \title{Get Course Correction Parameter}
 \usage{
 getCourseCorrection(results, alpha = 4.4, beta = 2355,
-  lower_thresh = 0.1, upper_thresh = 1, baseID = "mGeneseo15",
-  baseIntercept = 1531.96)
+  lower_thresh = 0.7, upper_thresh = 1, race_dist = "8k",
+  baseID = "mGeneseo15", baseIntercept = 1531.96,
+  teams_to_drop = NULL)
 }
 \arguments{
 \item{results}{The results for the race you are speed rating}
@@ -19,6 +20,8 @@ getCourseCorrection(results, alpha = 4.4, beta = 2355,
 
 \item{upper_thresh}{The quantile results must be less than to contribute to calculating the course correction}
 
+\item{race_dist}{The distance of the race being analyzed}
+
 \item{baseID}{The race ID for the base race}
 
 \item{baseIntercept}{The regression intercept for the base race}
@@ -30,7 +33,7 @@ gammaFit The best fit estimate for the course correction parameter, gamma.
 This function estimates and returns the course correction parameter, gamma, for courses that are not the base course.
 }
 \examples{
-getCourseCorrection(results = geneseo16, alpha = 4.4, beta = 2355, lower_thresh = 0.1, upper_thresh = 0.95, baseID = "mGeneseo15", baseIntercept = 1527.197)
+getCourseCorrection(results = geneseo16, alpha = 4.4, beta = 2355, lower_thresh = 0.1, upper_thresh = 0.95, race_dist = "8k", baseID = "mGeneseo15", baseIntercept = 1527.197)
 }
 \keyword{country,}
 \keyword{cross}
