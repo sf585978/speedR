@@ -32,7 +32,7 @@ bootstrap <- function(allSpeedRatings, year) {
       if (individualResults$Year[j] != year) {
         w[j] <- 0.1/(year - individualResults$Year[j])
       } else {
-        w[j] <- (1.5 / 11) * week_2[j]
+        w[j] <- (1.5 / 11) * individualResults$week_2[j]
       }
       if ((individualResults$`Speed Rating`[j] /
            mean(individualResults$`Speed Rating`)) < 0.95) {
