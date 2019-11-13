@@ -32,14 +32,6 @@ bootstrap <- function(allSpeedRatings, year) {
       if (individualResults$Year[j] != year) {
         w[j] <- 0.1/(year - individualResults$Year[j])
       } else {
-        # if (individualResults$Week[j] %in% c("Week 1", "Week 2", "Week 3",
-        #                                      "Preseason")) {
-        #   w[j] <- 0.5
-        # }
-        # if (individualResults$Week[j] %in% c("Week 9", "Week 10", "Week 11",
-        #                                      "Week 12")) {
-        #   w[j] <- 1.5
-        # }
         w[j] <- (1.5 / 11) * week_2[j]
       }
       if ((individualResults$`Speed Rating`[j] /
