@@ -40,7 +40,7 @@ bootstrap <- function(allSpeedRatings, year) {
              mean(individualResults$`Speed Rating`)) > 1.1 |
             (individualResults$`Speed Rating`[j] /
              mean(individualResults$`Speed Rating`)) < 0.95) {
-          w[j] <- w[j] - 0.25
+          w[j] <- w[j] - 0.5
         }
       }
     }
@@ -48,7 +48,7 @@ bootstrap <- function(allSpeedRatings, year) {
       w[which.max(individualResults$`Speed Rating`)] + 0.5
     w[nResults] <- w[nResults] + 0.5
     B = 1000
-    n = 1
+    n = 100
     boot.samples = matrix(sample(individualResults$`Speed Rating`, 
                                  size = B * n, 
                                  replace = TRUE,

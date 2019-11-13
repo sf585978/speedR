@@ -34,11 +34,11 @@ getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race, year) {
         if (individualResults$Year[j] != year) {
           w[j] <- 0.1/(year - individualResults$Year[j])
         } else {
-          if (individualResults$Week[i] %in% c("Week 1", "Week 2", "Week 3",
+          if (individualResults$Week[j] %in% c("Week 1", "Week 2", "Week 3",
                                                "Preseason")) {
             w[j] <- 0.5
           }
-          if (individualResults$Week[i] %in% c("Week 9", "Week 10", "Week 11",
+          if (individualResults$Week[j] %in% c("Week 9", "Week 10", "Week 11",
                                                "Week 12")) {
             w[j] <- 1.5
           }
@@ -46,14 +46,14 @@ getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race, year) {
             if ((individualResults$`Speed Rating`[j] /
                  1e-6) > 1.1 |
                 (individualResults$`Speed Rating`[j] /
-                 1e-6) < 0.9) {
-              w[j] <- w[j] - 0.25
+                 1e-6) < 0.95) {
+              w[j] <- w[j] - 0.5
             }
           } else if ((individualResults$`Speed Rating`[j] /
                       mean(individualResults$`Speed Rating`)) > 1.1 |
                      (individualResults$`Speed Rating`[j] /
-                      mean(individualResults$`Speed Rating`)) < 0.9) {
-            w[j] <- w[j] - 0.25
+                      mean(individualResults$`Speed Rating`)) < 0.95) {
+            w[j] <- w[j] - 0.5
           }
         }
       }
