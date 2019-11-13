@@ -46,7 +46,7 @@ bootstrap <- function(allSpeedRatings, year) {
       w[which.max(individualResults$`Speed Rating`)] + 0.5
     w[nResults] <- w[nResults] + 0.5
     B = 1000
-    n = 100
+    n = 1
     boot.samples = matrix(sample(individualResults$`Speed Rating`, 
                                  size = B * n, 
                                  replace = TRUE,
