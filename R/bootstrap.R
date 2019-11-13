@@ -36,7 +36,7 @@ bootstrap <- function(allSpeedRatings, year) {
       }
       if ((individualResults$`Speed Rating`[j] /
            mean(individualResults$`Speed Rating`)) < 0.95) {
-        w[j] <- w[j] - 0.25
+        w[j] <- 0.1
       }
     }
     w[which.max(individualResults$`Speed Rating`)] <- 
