@@ -44,16 +44,12 @@ getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race, year) {
           }
           if (mean(individualResults$`Speed Rating`[j]) == 0) {
             if ((individualResults$`Speed Rating`[j] /
-                 1e-6) > 1.1 |
-                (individualResults$`Speed Rating`[j] /
                  1e-6) < 0.95) {
-              w[j] <- w[j] - 0.5
+              w[j] <- w[j] - 0.25
             }
           } else if ((individualResults$`Speed Rating`[j] /
-                      mean(individualResults$`Speed Rating`)) > 1.1 |
-                     (individualResults$`Speed Rating`[j] /
                       mean(individualResults$`Speed Rating`)) < 0.95) {
-            w[j] <- w[j] - 0.5
+            w[j] <- w[j] - 0.25
           }
         }
       }
