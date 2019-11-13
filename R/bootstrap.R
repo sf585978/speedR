@@ -12,6 +12,10 @@
 bootstrap <- function(allSpeedRatings, year) {
   require(dplyr)
   require(progress)
+  allSpeedRatings <-
+    allSpeedRatings %>%
+    mutate(week_2 = stringr::str_remove(Week, "Week "),
+           week_2 = as.numeric(week_2))
   uniques <- unique(allSpeedRatings[c("Name", "School")])
   counts <- numeric(length(uniques$Name))
   out <- numeric(length(uniques$Name))
@@ -28,13 +32,15 @@ bootstrap <- function(allSpeedRatings, year) {
       if (individualResults$Year[j] != year) {
         w[j] <- 0.1/(year - individualResults$Year[j])
       } else {
-        if (individualResults$Week[j] %in% c("Week 1", "Week 2", "Week 3",
-                                             "Preseason")) {
-          w[j] <- 0.5
-        }
-        if (individualResults$Week[j] %in% c("Week 9", "Week 10", "Week 11",
-                                             "Week 12")) {
-          w[j] <- 1.5
+        # if (individualResults$Week[j] %in% c("Week 1", "Week 2", "Week 3",
+        #                                      "Preseason")) {
+        #   w[j] <- 0.5
+        # }
+        # if (individualResults$Week[j] %in% c("Week 9", "Week 10", "Week 11",
+        #                                      "Week 12")) {
+        #   w[j] <- 1.5
+        # }
+          w[j] <- (1.5 / 11) * week_2[j]
         }
         if ((individualResults$`Speed Rating`[j] /
              mean(individualResults$`Speed Rating`)) < 0.95) {

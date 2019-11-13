@@ -14,6 +14,10 @@
 getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race, year) {
   require(dplyr)
   require(progress)
+  allSpeedRatings <-
+    allSpeedRatings %>%
+    mutate(week_2 = stringr::str_remove(Week, "Week "),
+           week_2 = as.numeric(week_2))
   uniques <- allSpeedRatings %>%
     filter(Race == race)
   uniques <- unique(uniques[c("Name", "School", "Year")])
@@ -34,14 +38,15 @@ getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race, year) {
         if (individualResults$Year[j] != year) {
           w[j] <- 0.1/(year - individualResults$Year[j])
         } else {
-          if (individualResults$Week[j] %in% c("Week 1", "Week 2", "Week 3",
-                                               "Preseason")) {
-            w[j] <- 0.5
-          }
-          if (individualResults$Week[j] %in% c("Week 9", "Week 10", "Week 11",
-                                               "Week 12")) {
-            w[j] <- 1.5
-          }
+          # if (individualResults$Week[j] %in% c("Week 1", "Week 2", "Week 3",
+          #                                      "Preseason")) {
+          #   w[j] <- 0.5
+          # }
+          # if (individualResults$Week[j] %in% c("Week 9", "Week 10", "Week 11",
+          #                                      "Week 12")) {
+          #   w[j] <- 1.5
+          # }
+          w[j] <- (1.5 / 11) * week_2[j]
           if (mean(individualResults$`Speed Rating`[j]) == 0) {
             if ((individualResults$`Speed Rating`[j] /
                  1e-6) < 0.95) {
