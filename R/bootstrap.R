@@ -40,41 +40,41 @@ bootstrap <- function(allSpeedRatings, year) {
         #                                      "Week 12")) {
         #   w[j] <- 1.5
         # }
-          w[j] <- (1.5 / 11) * week_2[j]
-        }
-        if ((individualResults$`Speed Rating`[j] /
-             mean(individualResults$`Speed Rating`)) < 0.95) {
-          w[j] <- w[j] - 0.25
-        }
+        w[j] <- (1.5 / 11) * week_2[j]
+      }
+      if ((individualResults$`Speed Rating`[j] /
+           mean(individualResults$`Speed Rating`)) < 0.95) {
+        w[j] <- w[j] - 0.25
       }
     }
-    w[which.max(individualResults$`Speed Rating`)] <- 
-      w[which.max(individualResults$`Speed Rating`)] + 0.5
-    w[nResults] <- w[nResults] + 0.5
-    B = 1000
-    n = 1
-    boot.samples = matrix(sample(individualResults$`Speed Rating`, 
-                                 size = B * n, 
-                                 replace = TRUE,
-                                 prob = w),
-                          B, 
-                          n)
-    boot.statistics <- apply(boot.samples, 1, mean)
-    boot.mean <- mean(boot.statistics)
-    boot.se <- sd(boot.statistics)
-    # samples <- sample(individualResults$`Speed Rating`,
-    #                   size = 1000,
-    #                   replace = TRUE,
-    #                   prob = w)
-    out[i] <- boot.mean
-    out2[i] <- boot.se
-    counts[i] <- nResults
-    years[i] <- max(individualResults$Year)
-    pb$tick()
   }
-  returned <- as.data.frame(cbind(uniques[, 1:2], out, out2, counts, years))
-  colnames(returned) <- c("name", "school", "refSR", "se", "Number of Races",
-                                   "Most Recent Year")
-  return(returned)
+  w[which.max(individualResults$`Speed Rating`)] <- 
+    w[which.max(individualResults$`Speed Rating`)] + 0.5
+  w[nResults] <- w[nResults] + 0.5
+  B = 1000
+  n = 1
+  boot.samples = matrix(sample(individualResults$`Speed Rating`, 
+                               size = B * n, 
+                               replace = TRUE,
+                               prob = w),
+                        B, 
+                        n)
+  boot.statistics <- apply(boot.samples, 1, mean)
+  boot.mean <- mean(boot.statistics)
+  boot.se <- sd(boot.statistics)
+  # samples <- sample(individualResults$`Speed Rating`,
+  #                   size = 1000,
+  #                   replace = TRUE,
+  #                   prob = w)
+  out[i] <- boot.mean
+  out2[i] <- boot.se
+  counts[i] <- nResults
+  years[i] <- max(individualResults$Year)
+  pb$tick()
+}
+returned <- as.data.frame(cbind(uniques[, 1:2], out, out2, counts, years))
+colnames(returned) <- c("name", "school", "refSR", "se", "Number of Races",
+                        "Most Recent Year")
+return(returned)
 }
   
