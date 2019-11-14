@@ -18,7 +18,7 @@
 predictCourseCorrection <- function(results,
                                     race_dist = "8k",
                                     model_type = "lm",
-                                    references,
+                                    references = updatedReference,
                                     alpha = 4.4, 
                                     beta = 2355) {
   
