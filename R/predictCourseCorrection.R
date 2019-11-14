@@ -57,7 +57,7 @@ predictCourseCorrection <- function(results,
                                             by = c("name", "school")))
   if(nrow(results2) == 0) {
     message(paste("No reference runners found for ", results$raceID[1], ".", sep =""))
-    return()
+    return(gamma)
   } else {
     x <- results2$seconds
     results2 <- results2 %>%
@@ -74,6 +74,5 @@ predictCourseCorrection <- function(results,
     
     gamma <- gamma + average_residual
   }
-  
   return(gamma)
 }
