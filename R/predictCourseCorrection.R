@@ -17,7 +17,10 @@
 
 predictCourseCorrection <- function(results,
                                     race_dist = "8k",
-                                    model_type = "lm") {
+                                    model_type = "lm",
+                                    references,
+                                    alpha = 4.4, 
+                                    beta = 2355) {
   
   data("geneseo15_metrics")
   
@@ -48,6 +51,28 @@ predictCourseCorrection <- function(results,
     data("gam_course_correction")
     gamma <- predict.gam(m_gam, newdata = results_df)
   }
+  
+  results2 <- suppressWarnings(results %>%
+                                 inner_join(references,
+                                            by = c("name", "school")))
+  if(nrow(results2) == 0) {
+    message(paste("No reference runners found for ", results$raceID[1], ".", sep =""))
+    return()
+  } else {
+    x <- results2$seconds
+    results2 <- results2 %>%
+      mutate(z = SR_CourseCorrection(x, alpha, beta, gamma),
+             cols = ifelse(refSR > z, "red", "green"),
+             diffs = z - refSR,
+             label = ifelse(abs(diffs) > quantile(abs(diffs), 0.95), name, NA),
+             residual = z - refSR)
+    
+    results3 <- results2 %>%
+      filter(seconds <= quantile(seconds, 0.5))
+    
+    average_residual <- median(results2$residual)
+    
+    gamma <- gamma + average_residual
   
   return(gamma)
 }
