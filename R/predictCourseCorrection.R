@@ -73,6 +73,7 @@ predictCourseCorrection <- function(results,
     average_residual <- median(results2$residual)
     
     gamma <- gamma + average_residual
+  }
   
   return(gamma)
 }
