@@ -73,35 +73,61 @@ predictCourseCorrection <- function(results,
 
   if(model_type == "lm") {
     data("lm_course_correction")
-    gamma <- predict(m_lm, newdata = results_df)
+    preds <- predict(m_lm, newdata = results_df, interval = "prediction")
+    gamma <- preds[1]
+    gamma_low = preds[2]
+    gamma_high = preds[3]
+    
+    results2 <- suppressWarnings(results %>%
+                                   inner_join(references,
+                                              by = c("name", "school")))
+    if(nrow(results2) <= 20) {
+      message(paste("Not enough reference runners found for ", results$raceID[1], ".", sep =""))
+      return(gamma)
+    } else {
+      x <- results2$seconds
+      gamma_space <- seq(round(gamma_low), round(gamma_high), by = 1)
+      gamma_x <- gamma_space[1]
+      results2 <- results2 %>%
+        mutate(z = SR_CourseCorrection(x, alpha, beta, gamma_x),
+               cols = ifelse(refSR > z, "red", "green"),
+               diffs = z - refSR,
+               label = ifelse(abs(diffs) > quantile(abs(diffs), 0.95), name, NA),
+               residual = z - refSR,
+               n_neighbors = n_neighbors(seconds, refSR))
+      average_resid <- sqrt(weighted.mean(results2$residual ^ 2, 
+                                          w = results2$n_neighbors))
+      for (i in 2:length(gamma_space)) {
+        gamma_y <- gamma_space[i]
+        results2 <- results2 %>%
+          mutate(z = SR_CourseCorrection(x, alpha, beta, gamma_y),
+                 cols = ifelse(refSR > z, "red", "green"),
+                 diffs = z - refSR,
+                 label = ifelse(abs(diffs) > quantile(abs(diffs), 0.95), name, NA),
+                 residual = z - refSR,
+                 n_neighbors = n_neighbors(seconds, refSR))
+        average_resid_y <- sqrt(weighted.mean(results2$residual ^ 2, 
+                                              w = results2$n_neighbors))
+        if (average_resid_y > average_resid) {
+          gamma <- gamma_x
+          return(gamma)
+        } else {
+          gamma_x <- gamma_y
+          average_resid <- average_resid_y
+        }
+      }
+      # results3 <- results2 %>%
+      #   filter(seconds <= quantile(seconds, 0.5))
+      
+      # average_residual <- 2 * weighted.mean(results2$residual,
+      #                                       w = results2$n_neighbors)
+      # 
+      # gamma <- gamma + average_residual
+    }
   } else {
     data("gam_course_correction")
     gamma <- predict.gam(m_gam, newdata = results_df)
   }
-  
-  results2 <- suppressWarnings(results %>%
-                                 inner_join(references,
-                                            by = c("name", "school")))
-  if(nrow(results2) <= 20) {
-    message(paste("Not enough reference runners found for ", results$raceID[1], ".", sep =""))
     return(gamma)
-  } else {
-    x <- results2$seconds
-    results2 <- results2 %>%
-      mutate(z = SR_CourseCorrection(x, alpha, beta, gamma),
-             cols = ifelse(refSR > z, "red", "green"),
-             diffs = z - refSR,
-             label = ifelse(abs(diffs) > quantile(abs(diffs), 0.95), name, NA),
-             residual = z - refSR,
-             n_neighbors = n_neighbors(seconds, refSR))
-    
-    results3 <- results2 %>%
-      filter(seconds <= quantile(seconds, 0.5))
-    
-    average_residual <- 2 * weighted.mean(results2$residual,
-                                      w = results2$n_neighbors)
-    
-    gamma <- gamma + average_residual
-  }
-  return(gamma)
 }
+  
