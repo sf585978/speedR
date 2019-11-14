@@ -38,28 +38,17 @@ getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race, year) {
         if (individualResults$Year[j] != year) {
           w[j] <- 0.1/(year - individualResults$Year[j])
         } else {
-          # if (individualResults$Week[j] %in% c("Week 1", "Week 2", "Week 3",
-          #                                      "Preseason")) {
-          #   w[j] <- 0.5
-          # }
-          # if (individualResults$Week[j] %in% c("Week 9", "Week 10", "Week 11",
-          #                                      "Week 12")) {
-          #   w[j] <- 1.5
-          # }
-          w[j] <- (1.5 / 11) * allSpeedRatings$week_2[j]
-          if (mean(individualResults$`Speed Rating`[j]) == 0) {
-            if ((individualResults$`Speed Rating`[j] /
-                 1e-6) < 0.95) {
-              w[j] <- w[j] - 0.25
-            }
-          } else if ((individualResults$`Speed Rating`[j] /
-                      mean(individualResults$`Speed Rating`)) < 0.95) {
-            w[j] <- w[j] - 0.25
-          }
+          w[j] <- (2 / 121) * (individualResults$week_2[j] ^ 2)
+        }
+        if ((individualResults$`Speed Rating`[j] /
+             mean(individualResults$`Speed Rating`)) < 0.95) {
+          w[j] <- 0.1
         }
       }
+      w[which.max(individualResults$`Speed Rating`)] <- 
+        w[which.max(individualResults$`Speed Rating`)] + 0.75
+      w[nResults] <- w[nResults] + 0.5
     }
-    w[nResults] <- w[nResults] + 0.5
     out[i] <- weighted.mean(individualResults$`Speed Rating`, w = w)
     counts[i] <- nResults
     years[i] <- max(individualResults$Year)
