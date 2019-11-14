@@ -98,7 +98,7 @@ predictCourseCorrection <- function(results,
     results3 <- results2 %>%
       filter(seconds <= quantile(seconds, 0.5))
     
-    average_residual <- weighted.mean(results2$residual,
+    average_residual <- 2 * weighted.mean(results2$residual,
                                       w = results2$n_neighbors)
     
     gamma <- gamma + average_residual
