@@ -46,7 +46,7 @@ getUpdatedRefSR <- function(allSpeedRatings, updatedReference, race, year) {
           #                                      "Week 12")) {
           #   w[j] <- 1.5
           # }
-          w[j] <- (1.5 / 11) * week_2[j]
+          w[j] <- (1.5 / 11) * allSpeedRatings$week_2[j]
           if (mean(individualResults$`Speed Rating`[j]) == 0) {
             if ((individualResults$`Speed Rating`[j] /
                  1e-6) < 0.95) {
