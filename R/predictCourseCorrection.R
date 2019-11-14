@@ -15,6 +15,33 @@
 #' @examples 
 #' predictCourseCorrection(results = geneseo16, race_dist = "8k", model_type = "lm")
 
+n_neighbors <- function(x, y, bandwidth_x = 5, bandwidth_y = 5) {
+  require(dplyr)
+  dataset <- as.data.frame(cbind(x, y))
+  n_neighbors <- numeric(nrow(dataset))
+  for (i in 1:nrow(dataset)) {
+    x_i <- dataset$x[i]
+    y_i <- dataset$y[i]
+    k <- 
+      tryCatch({
+        dataset %>%
+          filter(x <= x_i + bandwidth_x,
+                 x >= x_i - bandwidth_x,
+                 y <= y_i + bandwidth_y,
+                 y >= y_i - bandwidth_y)
+      }, error = function(e) {
+        NULL
+      })
+    
+    if(is.null(k)) {
+      n_neighbors[i] <- 0
+    } else{
+      n_neighbors[i] <- nrow(k) - 1
+    }
+  }
+  return(n_neighbors)
+}
+
 predictCourseCorrection <- function(results,
                                     race_dist = "8k",
                                     model_type = "lm",
@@ -65,12 +92,14 @@ predictCourseCorrection <- function(results,
              cols = ifelse(refSR > z, "red", "green"),
              diffs = z - refSR,
              label = ifelse(abs(diffs) > quantile(abs(diffs), 0.95), name, NA),
-             residual = z - refSR)
+             residual = z - refSR,
+             n_neighbors = n_neighbors(seconds, refSR))
     
     results3 <- results2 %>%
       filter(seconds <= quantile(seconds, 0.5))
     
-    average_residual <- median(results2$residual)
+    average_residual <- weighted.mean(results2$residual,
+                                      w = results2$n_neighbors)
     
     gamma <- gamma + average_residual
   }
