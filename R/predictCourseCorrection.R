@@ -55,8 +55,8 @@ predictCourseCorrection <- function(results,
   results2 <- suppressWarnings(results %>%
                                  inner_join(references,
                                             by = c("name", "school")))
-  if(nrow(results2) == 0) {
-    message(paste("No reference runners found for ", results$raceID[1], ".", sep =""))
+  if(nrow(results2) > 20) {
+    message(paste("Not enough reference runners found for ", results$raceID[1], ".", sep =""))
     return(gamma)
   } else {
     x <- results2$seconds
