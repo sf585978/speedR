@@ -32,16 +32,17 @@ bootstrap <- function(allSpeedRatings, year) {
       if (individualResults$Year[j] != year) {
         w[j] <- 0.1/(year - individualResults$Year[j])
       } else {
-        w[j] <- (2 / 121) * (individualResults$week_2[j] ^ 2)
+        w[j] <- (3 / max(individualResults$week_2 ^ 3)) * 
+          (individualResults$week_2[j] ^ 3)
       }
       if ((individualResults$`Speed Rating`[j] /
-           mean(individualResults$`Speed Rating`)) < 0.95) {
+           mean(individualResults$`Speed Rating`)) < 0.975) {
         w[j] <- 0.1
       }
     }
     w[which.max(individualResults$`Speed Rating`)] <- 
-      w[which.max(individualResults$`Speed Rating`)] + 0.75
-    w[nResults] <- w[nResults] + 0.5
+      w[which.max(individualResults$`Speed Rating`)] + 1
+    # w[nResults] <- w[nResults] + 0.5
     B = 1000
     n = 1
     boot.samples = matrix(sample(individualResults$`Speed Rating`, 
