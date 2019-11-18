@@ -82,7 +82,8 @@ predictCourseCorrection <- function(results,
                                    inner_join(references,
                                               by = c("name", "school")))
     if(nrow(results2) <= 20) {
-      message(paste("Not enough reference runners found for ", results$raceID[1], ".", sep =""))
+      message(paste("Not enough reference runners found for ", 
+                    results$raceID[1], ".", sep =""))
       return(gamma)
     } else {
       x <- results2$seconds
@@ -92,7 +93,8 @@ predictCourseCorrection <- function(results,
         mutate(z = SR_CourseCorrection(x, alpha, beta, gamma_x),
                cols = ifelse(refSR > z, "red", "green"),
                diffs = z - refSR,
-               label = ifelse(abs(diffs) > quantile(abs(diffs), 0.95), name, NA),
+               label = ifelse(abs(diffs) > quantile(abs(diffs), 0.95), name,
+                              NA),
                residual = z - refSR,
                n_neighbors = n_neighbors(seconds, refSR))
       average_resid <- sqrt(weighted.mean(results2$residual ^ 2, 
@@ -103,11 +105,12 @@ predictCourseCorrection <- function(results,
           mutate(z = SR_CourseCorrection(x, alpha, beta, gamma_y),
                  cols = ifelse(refSR > z, "red", "green"),
                  diffs = z - refSR,
-                 label = ifelse(abs(diffs) > quantile(abs(diffs), 0.95), name, NA),
+                 label = ifelse(abs(diffs) > quantile(abs(diffs), 0.95), name,
+                                NA),
                  residual = z - refSR,
                  n_neighbors = n_neighbors(seconds, refSR))
         average_resid_y <- sqrt(weighted.mean(results2$residual ^ 2, 
-                                              w = results2$n_neighbors))
+                                              w = results2$n_neighbors + 0.001))
         if (average_resid_y > average_resid) {
           gamma <- gamma_x
           return(gamma)
