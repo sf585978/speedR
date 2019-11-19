@@ -28,7 +28,6 @@ getCourseCorrection <- function(results,
   require(dplyr)
   require(ggplot2)
   require(ggrepel)
-  require(ggpointdensity)
   
   if (race_dist == "8k") {
     window_l = 18
