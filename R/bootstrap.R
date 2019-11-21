@@ -112,7 +112,7 @@ bootstrap <- function(allSpeedRatings, year, adjusted = FALSE) {
                mean(individualResults$`Speed Rating`)) < 0.975) {
             w[j] <- 0.1
           }
-          if (individualResults$ratio[j] > 1) {
+          if (individualResults$ratio[j] > 1.1) {
             w[j] <- w[j] * (1 / individualResults$ratio[j])
           }
         }
