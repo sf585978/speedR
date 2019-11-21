@@ -49,7 +49,7 @@ bootstrap <- function(allSpeedRatings, year, adjusted = FALSE) {
           }
         }
         w[which.max(individualResults$`Speed Rating`)] <- 
-          w[which.max(individualResults$`Speed Rating`)] + 1
+          w[which.max(individualResults$`Speed Rating`)] + 1.5
         # w[nResults] <- w[nResults] + 0.5
         B = 1000
         n = 1
