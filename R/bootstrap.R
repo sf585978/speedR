@@ -38,10 +38,10 @@ bootstrap <- function(allSpeedRatings, year, adjusted = FALSE) {
         w <- rep(1, nResults)
         for (j in 1 : length(individualResults$Name)) {
           if (individualResults$Year[j] != year) {
-            w[j] <- 0.1/(year - individualResults$Year[j])
+            w[j] <- 1/(year - individualResults$Year[j])
           } else {
-            w[j] <- (3 / max(individualResults$week_2) ^ 3) * 
-              (individualResults$week_2[j] ^ 3)
+            w[j] <- (3 / max(individualResults$week_2) ^ 2) * 
+              (individualResults$week_2[j] ^ 2) + 1
           }
           if ((individualResults$`Speed Rating`[j] /
                mean(individualResults$`Speed Rating`)) < 0.975) {
@@ -49,7 +49,7 @@ bootstrap <- function(allSpeedRatings, year, adjusted = FALSE) {
           }
         }
         w[which.max(individualResults$`Speed Rating`)] <- 
-          w[which.max(individualResults$`Speed Rating`)] + 1.5
+          w[which.max(individualResults$`Speed Rating`)] + 2
         # w[nResults] <- w[nResults] + 0.5
         B = 1000
         n = 1
@@ -105,8 +105,8 @@ bootstrap <- function(allSpeedRatings, year, adjusted = FALSE) {
           if (individualResults$Year[j] != year) {
             w[j] <- 1/(year - individualResults$Year[j])
           } else {
-            w[j] <- (3 / max(individualResults$week_2) ^ 3) * 
-              (individualResults$week_2[j] ^ 3)
+            w[j] <- (3 / max(individualResults$week_2) ^ 2) * 
+              (individualResults$week_2[j] ^ 2) + 1
           }
           if ((individualResults$`Speed Rating`[j] /
                mean(individualResults$`Speed Rating`)) < 0.975) {
@@ -117,7 +117,7 @@ bootstrap <- function(allSpeedRatings, year, adjusted = FALSE) {
           }
         }
         w[which.max(individualResults$`Speed Rating`)] <- 
-          w[which.max(individualResults$`Speed Rating`)] + 1.5
+          w[which.max(individualResults$`Speed Rating`)] + 2
         # w[nResults] <- w[nResults] + 0.5
         B = 1000
         n = 1
