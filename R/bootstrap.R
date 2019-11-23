@@ -40,7 +40,7 @@ bootstrap <- function(allSpeedRatings, year, adjusted = FALSE) {
           if (individualResults$Year[j] != year) {
             w[j] <- 1/(year - individualResults$Year[j])
           } else {
-            w[j] <- (3 / max(individualResults$week_2) ^ 2) * 
+            w[j] <- (3 / max(individualResults$week_2, na.rm = TRUE) ^ 2) * 
               (individualResults$week_2[j] ^ 2) + 1
           }
           if ((individualResults$`Speed Rating`[j] /

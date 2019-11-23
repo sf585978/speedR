@@ -36,7 +36,7 @@ courseCorrectionDiagPlot <- function(results,
              label = ifelse(abs(diffs) > quantile(abs(diffs), 
                                                   0.95, 
                                                   na.rm = TRUE), name, NA))
-      
+    
     ggplot(results2, aes(x = seconds, y = refSR, color = cols)) +
         geom_point() +
         scale_color_manual("Vs. Expectation", 
