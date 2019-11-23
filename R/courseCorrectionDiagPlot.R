@@ -32,8 +32,10 @@ courseCorrectionDiagPlot <- function(results,
     results2 <- results2 %>%
       mutate(z = SR_CourseCorrection(x, alpha, beta, gamma),
              cols = ifelse(refSR > z, "red", "green"),
-             diffs = z - refSR,
-             label = ifelse(abs(diffs) > quantile(abs(diffs), 0.95), name, NA))
+             diffs = z - refSR)
+             label = ifelse(abs(diffs) > quantile(abs(diffs), 
+                                                  0.95, 
+                                                  na.rm = TRUE), name, NA))
       
     ggplot(results2, aes(x = seconds, y = refSR, color = cols)) +
         geom_point() +
