@@ -32,7 +32,7 @@ courseCorrectionDiagPlot <- function(results,
     results2 <- results2 %>%
       mutate(z = SR_CourseCorrection(x, alpha, beta, gamma),
              cols = ifelse(refSR > z, "red", "green"),
-             diffs = z - refSR)
+             diffs = z - refSR,
              label = ifelse(abs(diffs) > quantile(abs(diffs), 
                                                   0.95, 
                                                   na.rm = TRUE), name, NA))
